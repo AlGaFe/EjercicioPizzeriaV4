@@ -1,0 +1,8 @@
+
+Pedido: talavera
+Masa: Original--> Precio null €
+Tamaño: Familiar--> Precio null €
+Tipo de Pizza: Margarita--> Precio null €
+Ingredientes: [Aceitunas Negras, Atún, Bacon, Pimiento Verde, Champiñón]--> Precio 10.049999999999999 €
+-----------------------------------------------------------------------------------------
+Precio total final -------------------------------------------->0.0 €

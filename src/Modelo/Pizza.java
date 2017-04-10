@@ -1,4 +1,4 @@
-package ejerciciopizzeriaversion4;
+package Modelo;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,33 +7,33 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import javafx.scene.control.Alert;
 
 /* @author Alvaro*/
 public class Pizza {
 
-    private Path ubicacion;
+    private File ubicacion;
     private double precioIngredientes;
-    private double PrecioFinal;
     private String masa;
     private String tipo;
     private String tamano;
-    private ArrayList<String> listaIngredientes = new ArrayList<>();
-    private Precios precios = new Precios();
+    private Set<String> ListaIngredientes = new HashSet<>();
+    private Precios precios;
     private String nombre;
+    DecimalFormat formato = new DecimalFormat("0.00");
+    String ingrediente;
+    Double precioIngrediente;
 
     public Pizza() {
 
-    }
-
-    public void setPrecioFinal(double PrecioFinal) {
-        this.PrecioFinal = PrecioFinal;
-    }
-
-    public double getPrecioFinal() {
-        return PrecioFinal;
     }
 
     public void setPrecioIngredientes(double precioIngredientes) {
@@ -44,11 +44,11 @@ public class Pizza {
         return precioIngredientes;
     }
 
-    public void setUbicacion(Path ubicacion) {
+    public void setUbicacion(File ubicacion) {
         this.ubicacion = ubicacion;
     }
 
-    public Path getUbicacion() {
+    public File getUbicacion() {
         return ubicacion;
     }
 
@@ -72,12 +72,12 @@ public class Pizza {
         this.tamano = tamano;
     }
 
-    public void setListaIngredientes(ArrayList<String> listaIngredientes) {
-        this.listaIngredientes = listaIngredientes;
+    public void setListaIngredientes(Set<String> ListaIngredientes) {
+        this.ListaIngredientes = ListaIngredientes;
     }
 
-    public ArrayList<String> getListaIngredientes() {
-        return listaIngredientes;
+    public Set<String> getListaIngredientes() {
+        return ListaIngredientes;
     }
 
     public void setPrecios(Precios precios) {
@@ -109,23 +109,27 @@ public class Pizza {
             precioMasa = 0.0;
         }
         Double multiplicadorTamano = precios.precioTamano(tamano);
-        if (multiplicadorTamano == null) {
+        if (multiplicadorTamano == null || multiplicadorTamano == 0.0) {
             multiplicadorTamano = 1.15;
         }
         Double precioTipo = precios.precioTipo(tipo);
         if (precioTipo == null) {
             precioTipo = 0.0;
         }
-        for (int i = 0; i < this.listaIngredientes.size(); i++) {
-            String ingrediente = listaIngredientes.get(i);
-            Double precioIngrediente = precios.precioIngrediente(ingrediente);
-            if (precioIngrediente == null) {
-                precioIngrediente = 0.0;
-            }
-            precioIngredientes += precioIngrediente;
-
+        Iterator<String> lI = ListaIngredientes.iterator();
+        while (lI.hasNext()) {
+            ingrediente = lI.next();
         }
+        precioIngrediente = precios.precioIngrediente(ingrediente);
+//        for (int i = 0; i < this.listaIngredientes.size(); i++) {
+////            String ingrediente = listaIngredientes.get(i);
+//             = precios.precioIngrediente(ingrediente);
+        if (precioIngrediente == null) {
+            precioIngrediente = 0.0;
+        }
+        precioIngredientes += precioIngrediente;
 
+//        }
         precioTotal = multiplicadorTamano * (precioIngredientes + precioMasa + precioTipo);
         return precioTotal;
     }
@@ -134,13 +138,14 @@ public class Pizza {
         String nombreTicket;
         String fecha;
         LocalDateTime momento = LocalDateTime.now();
-        SimpleDateFormat formato = new SimpleDateFormat("ddMMyyyyHHmmss");
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
         fecha = formato.format(momento);
         nombreTicket = this.nombre + fecha;
         return nombreTicket;
     }
 
     public void generarTicket() {
+        try{
         String nombreTicket = crearNombreTicket();
         try {
             File directorio = new File(this.ubicacion + "\\" + nombreTicket + ".txt");
@@ -152,16 +157,25 @@ public class Pizza {
                 out.newLine();
                 out.write("Pedido: " + this.nombre);
                 out.newLine();
-                out.write("Masa: " + this.masa + "--> Precio " + this.precios.precioMasa(this.masa + "€"));
+                out.write("Masa: " + this.masa + "--> Precio " + formato.format(this.precios.precioMasa(masa)) + " €");
                 out.newLine();
-                out.write("Tamaño: " + this.tamano + "--> Precio " + this.precios.precioTamano(this.tamano + "€"));
+                out.write("Tamaño: " + this.tamano + "--> Precio " + formato.format(this.precios.precioTamano(tamano)) + " €");
                 out.newLine();
-                out.write("Tipo de Pizza: " + this.tipo + "--> Precio " + this.precios.precioTipo(this.tipo + "€"));
+                out.write("Tipo de Pizza: " + this.tipo + "--> Precio " + formato.format(this.precios.precioTipo(tipo)) + " €");
                 out.newLine();
-                out.write("Ingredientes: " + this.listaIngredientes + "--> Precio " + this.precioIngredientes + "€");
+                out.write("Ingredientes: " + this.ListaIngredientes + "--> Precio " + formato.format(this.precioIngredientes) + " €");
+                out.newLine();
+                out.write("-----------------------------------------------------------------------------------------");
+                out.newLine();
+                out.write("Precio total final -------------------------------------------->" + formato.format(this.calcularPrecio()) + " €");
             }
         } catch (IOException ex) {
 
         }
+    }catch (Exception e) {
+     Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Domino's Pizza");
+            alert.setContentText("No has introducido ninguna ruta para tu ticket, tu ticket se creará en la ruta por defecto");
+    }
     }
 }

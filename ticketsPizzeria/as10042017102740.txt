@@ -1,0 +1,8 @@
+
+Pedido: as
+Masa: Domino's Roll--> Precio 2.0 €
+Tamaño: Familiar--> Precio 1.3 €
+Tipo de Pizza: Margarita--> Precio 6.0 €
+Ingredientes: [Aceitunas Negras, Anchoas]--> Precio 3.5 €
+-----------------------------------------------------------------------------------------
+Precio total final -------------------------------------------->13.65 €

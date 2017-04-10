@@ -1,24 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejerciciopizzeriaversion4;
 
+import Modelo.Pizza;
+import Modelo.Precios;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
@@ -30,15 +30,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Alvaro
- */
+/* @author Alvaro */
 public class FXMLDocumentController implements Initializable {
 
+    Set<String> ListaIngredientes = new HashSet<>();
     ObservableList<String> tiposTamano = FXCollections.observableArrayList("Pequeña", "Mediana", "Familiar");
     ToggleGroup masa = new ToggleGroup();
     Double precioTotalDouble = 0.0;
@@ -152,6 +152,8 @@ public class FXMLDocumentController implements Initializable {
     private Button ButtonGenerarTicket;
     @FXML
     private ImageView DominosPizza;
+    @FXML
+    private AnchorPane AnchorPane;
 
     private void handleButtonAction(ActionEvent event) {
     }
@@ -162,175 +164,135 @@ public class FXMLDocumentController implements Initializable {
         this.DominosPizza.setImage(image);
         desplegableTamaño.setItems(tiposTamano);
         desplegableTamaño.setValue("Mediana");
-        listarprecios();
-        this.pizza.setUbicacion(Paths.get("C:\\Users\\daw\\Documents\\NetBeansProjects\\EjercicioPizeriaVersion4\\ticketsPizzeria"));
-    }
-
-    private void listarprecios() {
-        precios.getIngredientes().put("Anchoas", 2.50);
-        precios.getIngredientes().put("Aceitunas Negras", 1.00);
-        precios.getIngredientes().put("Atún", 1.85);
-        precios.getIngredientes().put("Cebolla", 1.00);
-        precios.getIngredientes().put("Cebolla Caramelizada", 1.85);
-        precios.getIngredientes().put("Champiñón", 2.85);
-        precios.getIngredientes().put("Jamón Serrano", 1.85);
-        precios.getIngredientes().put("Jamón de York", 1.00);
-        precios.getIngredientes().put("Maiz", 1.00);
-        precios.getIngredientes().put("Pepperoni", 1.85);
-        precios.getIngredientes().put("Pimiento Verde", 2.50);
-        precios.getIngredientes().put("Tofu", 3.00);
-        precios.getIngredientes().put("Tomate Natural", 1.00);
-        precios.getIngredientes().put("Bacon", 1.85);
-        precios.getIngredientes().put("Pollo a la Parrilla", 1.85);
-
-        precios.getTiposPizza().put("Margarita", 6.0);
-        precios.getTiposPizza().put("Cheesix", 8.0);
-        precios.getTiposPizza().put("Pulled Beef", 8.0);
-        precios.getTiposPizza().put("Pulled Pork", 8.0);
-        precios.getTiposPizza().put("Barbacoa", 7.0);
-        precios.getTiposPizza().put("Pecado Carnal", 7.0);
-        precios.getTiposPizza().put("Cremozza BBQ", 7.0);
-        precios.getTiposPizza().put("Cremozza Estilo Bourbon", 7.0);
-        precios.getTiposPizza().put("Carbonara", 7.0);
-        precios.getTiposPizza().put("Cabramelizada", 7.0);
-        precios.getTiposPizza().put("Pollo a la Parrilla", 7.0);
-        precios.getTiposPizza().put("Cuatro Quesos", 7.0);
-        precios.getTiposPizza().put("Hawaiana Plus", 7.0);
-        precios.getTiposPizza().put("Extravaganzza", 7.0);
-        precios.getTiposPizza().put("Pata Negra", 7.0);
-        precios.getTiposPizza().put("Campiña", 7.0);
-        precios.getTiposPizza().put("Tony Pepperoni", 7.0);
-
-        precios.getMasas().put("Original", 1.0);
-        precios.getMasas().put("Pan", 1.0);
-        precios.getMasas().put("Finízzima", 1.0);
-        precios.getMasas().put("Domino's Roll", 2.0);
-        precios.getMasas().put("Cabra & Roll", 2.0);
-
-        precios.getTamanos().put("Pequeña", 1.0);
-        precios.getTamanos().put("Mediana", 1.15);
-        precios.getTamanos().put("Familiar", 1.30);
-
+//        precios.listarprecios();//Cargar precios internos
+        precios.cargarPrecios();//Cargar precios desde carta.txt
+        pizza.setPrecios(precios);
+        Path ruta = Paths.get("C:\\Users\\daw\\Documents\\NetBeansProjects\\EjercicioPizzeriaV4\\ticketsPizzeria");
+        this.pizza.setUbicacion(ruta.toFile());
     }
 
     @FXML
     private void seleccionPizza(ActionEvent event) {
-        List<String> choices = new ArrayList<>();
+        try {
+            List<String> choices = new ArrayList<>();
 
-        choices.add("Margarita");
-        choices.add("Cheesix");
-        choices.add("Pulled Beef");
-        choices.add("Pulled Pork");
-        choices.add("Barbacoa");
-        choices.add("Pecado Carnal");
-        choices.add("Cremozza BBQ");
-        choices.add("Cremozza Estilo Bourbon");
-        choices.add("Carbonara");
-        choices.add("Cabramelizada");
-        choices.add("Pollo a la Parrilla");
-        choices.add("Cuatro Quesos");
-        choices.add("Hawaiana Plus");
-        choices.add("Extravaganzza");
-        choices.add("Pata Negra");
-        choices.add("Campiña");
-        choices.add("Tony Pepperoni");
+            choices.add("Margarita");
+            choices.add("Cheesix");
+            choices.add("Pulled Beef");
+            choices.add("Pulled Pork");
+            choices.add("Barbacoa");
+            choices.add("Pecado Carnal");
+            choices.add("Cremozza BBQ");
+            choices.add("Cremozza Estilo Bourbon");
+            choices.add("Carbonara");
+            choices.add("Cabramelizada");
+            choices.add("Pollo a la Parrilla");
+            choices.add("Cuatro Quesos");
+            choices.add("Hawaiana Plus");
+            choices.add("Extravaganzza");
+            choices.add("Pata Negra");
+            choices.add("Campiña");
+            choices.add("Tony Pepperoni");
 
-        ChoiceDialog<String> dialog = new ChoiceDialog<>("Margarita", choices);
-        dialog.setTitle("Domino's Pizza");
-        dialog.setHeaderText("Selección de Pizza");
-        dialog.setContentText("Elije tu pizza:");
+            ChoiceDialog<String> dialog = new ChoiceDialog<>("Margarita", choices);
+            dialog.setTitle("Domino's Pizza");
+            dialog.setHeaderText("Selección de Pizza");
+            dialog.setContentText("Elije tu pizza:");
 
-        Optional<String> result = dialog.showAndWait();
-        if (result.get().equals("Margarita")) {
-            pizza.setTipo("Margarita");
-            doublePizza = this.precios.getTiposPizza().get("Margarita");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Cheesix")) {
-            pizza.setTipo("Cheesix");
-            doublePizza = this.precios.getTiposPizza().get("Cheesix");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Pulled Beef")) {
-            pizza.setTipo("Pulled Beef");
-            doublePizza = this.precios.getTiposPizza().get("Pulled Beef");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Pulled Pork")) {
-            pizza.setTipo("Pulled Pork");
-            doublePizza = this.precios.getTiposPizza().get("Pulled Pork");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Barbacoa")) {
-            pizza.setTipo("Barbacoa");
-            doublePizza = this.precios.getTiposPizza().get("Barbacoa");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Pecado Carnal")) {
-            pizza.setTipo("Pecado Carnal");
-            doublePizza = this.precios.getTiposPizza().get("Pecado Carnal");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Cremozza BBQ")) {
-            pizza.setTipo("Cremozza BBQ");
-            doublePizza = this.precios.getTiposPizza().get("Cremozza BBQ");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Cremozza Estilo Bourbon")) {
-            pizza.setTipo("Cremozza Estilo Bourbon");
-            doublePizza = this.precios.getTiposPizza().get("Cremozza Estilo Bourbon");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Carbonara")) {
-            pizza.setTipo("Carbonara");
-            doublePizza = this.precios.getTiposPizza().get("Carbonara");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Cabramelizada")) {
-            pizza.setTipo("Cabramelizada");
-            doublePizza = this.precios.getTiposPizza().get("Cabramelizada");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Pollo a la Parrilla")) {
-            pizza.setTipo("Pollo a la Parrilla");
-            doublePizza = this.precios.getTiposPizza().get("Pollo a la Parrilla");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Cuatro Quesos")) {
-            pizza.setTipo("Cuatro Quesos");
-            doublePizza = this.precios.getTiposPizza().get("Cuatro Quesos");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Hawaiana Plus")) {
-            pizza.setTipo("Hawaiana Plus");
-            doublePizza = this.precios.getTiposPizza().get("Hawaiana Plus");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Extravaganzza")) {
-            pizza.setTipo("Extravaganzza");
-            doublePizza = this.precios.getTiposPizza().get("Extravaganzza");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Pata Negra")) {
-            pizza.setTipo("Pata Negra");
-            doublePizza = this.precios.getTiposPizza().get("Pata Negra");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Campiña")) {
-            pizza.setTipo("Campiña");
-            doublePizza = this.precios.getTiposPizza().get("Campiña");
-            this.labelPizza.setText("Tu elección: " + result.get());
-        }
-        if (result.get().equals("Tony Pepperoni")) {
-            pizza.setTipo("Tony Pepperoni");
-            doublePizza = this.precios.getTiposPizza().get("Tony Pepperoni");
-            this.labelPizza.setText("Tu elección: " + result.get());
+            Optional<String> result = dialog.showAndWait();
+            if (result.get().equals("Margarita")) {
+                pizza.setTipo("Margarita");
+                doublePizza = this.precios.getTiposPizza().get("Margarita");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Cheesix")) {
+                pizza.setTipo("Cheesix");
+                doublePizza = this.precios.getTiposPizza().get("Cheesix");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Pulled Beef")) {
+                pizza.setTipo("Pulled Beef");
+                doublePizza = this.precios.getTiposPizza().get("Pulled Beef");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Pulled Pork")) {
+                pizza.setTipo("Pulled Pork");
+                doublePizza = this.precios.getTiposPizza().get("Pulled Pork");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Barbacoa")) {
+                pizza.setTipo("Barbacoa");
+                doublePizza = this.precios.getTiposPizza().get("Barbacoa");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Pecado Carnal")) {
+                pizza.setTipo("Pecado Carnal");
+                doublePizza = this.precios.getTiposPizza().get("Pecado Carnal");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Cremozza BBQ")) {
+                pizza.setTipo("Cremozza BBQ");
+                doublePizza = this.precios.getTiposPizza().get("Cremozza BBQ");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Cremozza Estilo Bourbon")) {
+                pizza.setTipo("Cremozza Estilo Bourbon");
+                doublePizza = this.precios.getTiposPizza().get("Cremozza Estilo Bourbon");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Carbonara")) {
+                pizza.setTipo("Carbonara");
+                doublePizza = this.precios.getTiposPizza().get("Carbonara");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Cabramelizada")) {
+                pizza.setTipo("Cabramelizada");
+                doublePizza = this.precios.getTiposPizza().get("Cabramelizada");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Pollo a la Parrilla")) {
+                pizza.setTipo("Pollo a la Parrilla");
+                doublePizza = this.precios.getTiposPizza().get("Pollo a la Parrilla");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Cuatro Quesos")) {
+                pizza.setTipo("Cuatro Quesos");
+                doublePizza = this.precios.getTiposPizza().get("Cuatro Quesos");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Hawaiana Plus")) {
+                pizza.setTipo("Hawaiana Plus");
+                doublePizza = this.precios.getTiposPizza().get("Hawaiana Plus");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Extravaganzza")) {
+                pizza.setTipo("Extravaganzza");
+                doublePizza = this.precios.getTiposPizza().get("Extravaganzza");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Pata Negra")) {
+                pizza.setTipo("Pata Negra");
+                doublePizza = this.precios.getTiposPizza().get("Pata Negra");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Campiña")) {
+                pizza.setTipo("Campiña");
+                doublePizza = this.precios.getTiposPizza().get("Campiña");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+            if (result.get().equals("Tony Pepperoni")) {
+                pizza.setTipo("Tony Pepperoni");
+                doublePizza = this.precios.getTiposPizza().get("Tony Pepperoni");
+                this.labelPizza.setText("Tu elección: " + result.get());
+            }
+
+            this.pizzaElegida.setText(this.pizza.getTipo());
+            this.precioPizza.setText(formato.format(this.doublePizza) + "€");
+            this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
+        } catch (Exception e) {
+         
         }
 
-        this.pizzaElegida.setText(this.pizza.getTipo());
-        this.precioPizza.setText(formato.format(this.doublePizza) + "€");
-        this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
-        this.pizza.setPrecioFinal(this.pizza.calcularPrecio());
     }
 
     @FXML
@@ -371,7 +333,7 @@ public class FXMLDocumentController implements Initializable {
         this.MasaElegida.setText(this.pizza.getMasa());
         this.precioMasa.setText(formato.format(this.doublemasa) + "€");
         this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
-        this.pizza.setPrecioFinal(this.pizza.calcularPrecio());
+
     }
 
     @FXML
@@ -397,85 +359,100 @@ public class FXMLDocumentController implements Initializable {
         this.precioTamaño.setText("" + this.multiplicadorTamaño);
         precioTotalDouble = (doublemasa + doublePizza + doubleIngrediente) * multiplicadorTamaño;
         this.precioTotal.setText(formato.format(this.precioTotalDouble) + "€");
-        this.pizza.setPrecioFinal(this.pizza.calcularPrecio());
+
     }
 
     @FXML
     private void ingredientesExtra(ActionEvent event) {
         doubleIngrediente = 0.0;
-        ArrayList<String> ListaIngredientes = new ArrayList<>();
+        this.seleccionIngredientes.setText("");
+
         if (this.ingredienteAceitunas.isSelected()) {
+
             ListaIngredientes.add("Aceitunas Negras");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Aceitunas Negras");
             this.seleccionIngredientes.appendText("Aceitunas Negras" + "\n");
+
         }
         if (this.ingredienteAnchoas.isSelected()) {
+
             ListaIngredientes.add("Anchoas");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Anchoas");
             this.seleccionIngredientes.appendText("Anchoas" + "\n");
 
         }
         if (this.ingredienteAtun.isSelected()) {
+
             ListaIngredientes.add("Atún");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Atún");
             this.seleccionIngredientes.appendText("Atún" + "\n");
 
         }
         if (this.ingredienteCeballo.isSelected()) {
+
             ListaIngredientes.add("Cebolla");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Cebolla");
             this.seleccionIngredientes.appendText("Cebolla" + "\n");
 
         }
         if (this.ingredienteCebolla.isSelected()) {
+
             ListaIngredientes.add("Cebolla Caramelizada");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Cebolla Caramelizada");
             this.seleccionIngredientes.appendText("Cebolla Caramelizada" + "\n");
 
         }
         if (this.ingredienteChampinon.isSelected()) {
+
             ListaIngredientes.add("Champiñón");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Champiñón");
             this.seleccionIngredientes.appendText("Champiñón" + "\n");
 
         }
         if (this.ingredienteJamonS.isSelected()) {
+
             ListaIngredientes.add("Jamón Serrano");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Jamón Serrano");
             this.seleccionIngredientes.appendText("Jamón Serrano" + "\n");
 
         }
         if (this.ingredienteJamonY.isSelected()) {
+
             ListaIngredientes.add("Jamón de York");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Jamón de York");
             this.seleccionIngredientes.appendText("Jamón de York" + "\n");
 
         }
         if (this.ingredienteMaiz.isSelected()) {
+
             ListaIngredientes.add("Maiz");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Maiz");
             this.seleccionIngredientes.appendText("Maiz" + "\n");
 
         }
         if (this.ingredientePepperoni.isSelected()) {
+
             ListaIngredientes.add("Pepperoni");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Pepperoni");
             this.seleccionIngredientes.appendText("Pepperoni" + "\n");
 
         }
         if (this.ingredientePimientoV.isSelected()) {
+
             ListaIngredientes.add("Pimiento Verde");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Pimiento Verde");
             this.seleccionIngredientes.appendText("Pimiento Verde" + "\n");
 
         }
         if (this.ingredienteTofu.isSelected()) {
+
             ListaIngredientes.add("Tofu");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Tofu");
             this.seleccionIngredientes.appendText("Tofu" + "\n");
 
         }
         if (this.ingredienteTomate.isSelected()) {
+
             ListaIngredientes.add("Tomate Natural");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Tomate Natural");
             this.seleccionIngredientes.appendText("Tomate Natural" + "\n");
@@ -491,14 +468,15 @@ public class FXMLDocumentController implements Initializable {
             ListaIngredientes.add("Pollo a la Parrilla");
             doubleIngrediente = doubleIngrediente + this.precios.getIngredientes().get("Pollo a la Parrilla");
             this.seleccionIngredientes.appendText("Pollo a la Parrilla" + "\n");
-        }
 
-        this.precioIngredientes.setText(doubleIngrediente + "€");
+        }
+        this.precioIngredientes.setText(formato.format(doubleIngrediente) + "€");
         this.pizza.setPrecioIngredientes(doubleIngrediente);
         this.seleccionIngredientes.appendText("\n");
         this.seleccionIngredientes.appendText("\n");
         this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
-        this.pizza.setPrecioFinal(this.pizza.calcularPrecio());
+        pizza.setListaIngredientes(ListaIngredientes);
+
     }
 
     @FXML
@@ -551,6 +529,12 @@ public class FXMLDocumentController implements Initializable {
         this.labelPersonas.setText("");
 
         this.TextFieldNombre.setText("");
+        this.TextFieldNombre.setText(null);
+        Alert alert3 = new Alert(Alert.AlertType.WARNING);
+        alert3.setTitle("Domino's Pizza");
+        alert3.setHeaderText("Cancelación de Pedido");
+        alert3.setContentText("Su pedido a sido cancelado");
+        alert3.showAndWait();
     }
 
     @FXML
@@ -560,6 +544,20 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void ActionButtonGenerarPedido(ActionEvent event) {
         this.pizza.setNombre(this.TextFieldNombre.getText());
+        if (this.pizza.getNombre() != null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Domino's Pizza");
+            alert.setHeaderText("Introducción de pedido");
+            alert.setContentText("Su nombre del pedido se ha introducido correctamente");
+            alert.showAndWait();
+
+        } else {
+            Alert alert2 = new Alert(Alert.AlertType.ERROR);
+            alert2.setTitle("Domino's Pizza");
+            alert2.setHeaderText("Introducción de pedido");
+            alert2.setContentText("Error al introducir pedido");
+            alert2.showAndWait();
+        }
     }
 
     @FXML
@@ -568,12 +566,23 @@ public class FXMLDocumentController implements Initializable {
         File elegirFile = elegirDirectorio.showDialog(new Stage());
         Path elegirRuta = Paths.get(elegirFile.getAbsolutePath());
         File elegirFileDefinitivo = elegirRuta.toFile();
-        this.pizza.setUbicacion(elegirFileDefinitivo.toPath());
+        this.pizza.setUbicacion(elegirFileDefinitivo);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Domino's Pizza");
+        alert.setHeaderText("Información Cambio de ruta del Ticket");
+        alert.setContentText("La ruta de creación de su ticket se ha cambiado correctamente");
+        alert.showAndWait();
     }
 
     @FXML
     private void ActionButtonGenerarTicket(ActionEvent event) {
         this.pizza.generarTicket();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Domino's Pizza");
+        alert.setHeaderText("Información impresión de ticket");
+        alert.setContentText("Su impresión se ha realizado correctamente");
+        alert.showAndWait();
     }
 
 }

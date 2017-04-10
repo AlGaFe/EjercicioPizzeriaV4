@@ -1,0 +1,8 @@
+
+Pedido: alvaro
+Masa: Finízzima--> Precio null €
+Tamaño: Familiar--> Precio null €
+Tipo de Pizza: Margarita--> Precio null €
+Ingredientes: [Aceitunas Negras, Anchoas, Atún, Bacon]--> Precio 7.199999999999999 €
+-----------------------------------------------------------------------------------------
+Precio total final -------------------------------------------->0.0 €
