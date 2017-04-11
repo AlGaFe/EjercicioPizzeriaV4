@@ -119,8 +119,9 @@ public class Pizza {
         Iterator<String> lI = ListaIngredientes.iterator();
         while (lI.hasNext()) {
             ingrediente = lI.next();
-        }
+        
         precioIngrediente = precios.precioIngrediente(ingrediente);
+        }
 //        for (int i = 0; i < this.listaIngredientes.size(); i++) {
 ////            String ingrediente = listaIngredientes.get(i);
 //             = precios.precioIngrediente(ingrediente);
@@ -128,7 +129,7 @@ public class Pizza {
             precioIngrediente = 0.0;
         }
         precioIngredientes += precioIngrediente;
-
+        
 //        }
         precioTotal = multiplicadorTamano * (precioIngredientes + precioMasa + precioTipo);
         return precioTotal;

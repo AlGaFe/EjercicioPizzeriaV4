@@ -164,8 +164,8 @@ public class FXMLDocumentController implements Initializable {
         this.DominosPizza.setImage(image);
         desplegableTamaño.setItems(tiposTamano);
         desplegableTamaño.setValue("Mediana");
-//        precios.listarprecios();//Cargar precios internos
-        precios.cargarPrecios();//Cargar precios desde carta.txt
+        precios.listarprecios();//Cargar precios internos
+//        precios.cargarPrecios();//Cargar precios desde carta.txt
         pizza.setPrecios(precios);
         Path ruta = Paths.get("C:\\Users\\daw\\Documents\\NetBeansProjects\\EjercicioPizzeriaV4\\ticketsPizzeria");
         this.pizza.setUbicacion(ruta.toFile());
@@ -474,8 +474,9 @@ public class FXMLDocumentController implements Initializable {
         this.pizza.setPrecioIngredientes(doubleIngrediente);
         this.seleccionIngredientes.appendText("\n");
         this.seleccionIngredientes.appendText("\n");
-        this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
         pizza.setListaIngredientes(ListaIngredientes);
+        this.precioTotal.setText(formato.format(this.pizza.calcularPrecio()) + "€");
+        
 
     }
 
